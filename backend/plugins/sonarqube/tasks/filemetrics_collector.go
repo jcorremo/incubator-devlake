@@ -50,6 +50,7 @@ func CollectFilemetrics(taskCtx plugin.SubTaskContext) errors.Error {
 			query.Set("metricKeys", "code_smells,sqale_index,sqale_rating,bugs,reliability_rating,vulnerabilities,security_rating,security_hotspots,security_hotspots_reviewed,security_review_rating,ncloc,coverage,uncovered_lines,lines_to_cover")
 			query.Set("p", fmt.Sprintf("%v", reqData.Pager.Page))
 			query.Set("ps", fmt.Sprintf("%v", reqData.Pager.Size))
+			query.Set("organization", "jcorremo")
 			return query, nil
 		},
 		ResponseParser: func(res *http.Response) ([]json.RawMessage, errors.Error) {

@@ -102,6 +102,7 @@ func CollectIssues(taskCtx plugin.SubTaskContext) (err errors.Error) {
 			}
 			query.Set("p", fmt.Sprintf("%v", reqData.Pager.Page))
 			query.Set("ps", fmt.Sprintf("%v", reqData.Pager.Size))
+			query.Set("organization", "jcorremo")
 
 			query.Encode()
 			return query, nil

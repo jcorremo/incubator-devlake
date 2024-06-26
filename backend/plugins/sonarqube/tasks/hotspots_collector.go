@@ -51,6 +51,7 @@ func CollectHotspots(taskCtx plugin.SubTaskContext) errors.Error {
 			query.Set("projectKey", data.Options.ProjectKey)
 			query.Set("p", fmt.Sprintf("%v", reqData.Pager.Page))
 			query.Set("ps", fmt.Sprintf("%v", reqData.Pager.Size))
+			query.Set("organization", "jcorremo")
 			return query, nil
 		},
 		ResponseParser: func(res *http.Response) ([]json.RawMessage, errors.Error) {
