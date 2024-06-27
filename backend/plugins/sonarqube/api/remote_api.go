@@ -52,6 +52,7 @@ func querySonarqubeProjects(
 		"p":  {fmt.Sprintf("%v", page.Page)},
 		"ps": {fmt.Sprintf("%v", page.PageSize)},
 		"q":  {keyword},
+		"organization":"jcorremo"
 	}, nil)
 	if err != nil {
 		return
