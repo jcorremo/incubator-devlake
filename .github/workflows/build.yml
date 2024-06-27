@@ -98,10 +98,10 @@ jobs:
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
-#      - uses: actions/cache@v3
-#        with:
-#          path: /tmp/devlake-build-cache-${{ matrix.platform }}
-#          key: buildx-devlake-build-cache-${{ github.run_id }}-${{ matrix.platform }}
+      - uses: actions/cache@v3
+        with:
+          path: /tmp/devlake-build-cache-${{ matrix.platform }}
+          key: buildx-devlake-build-cache-${{ github.run_id }}-${{ matrix.platform }}
       - name: Build and cache lake build
         uses: docker/build-push-action@v3
         with:
@@ -115,6 +115,7 @@ jobs:
           build-args: |
             TAG=${{ github.ref_name }}
             SHA=${{ steps.get_short_sha.outputs.SHORT_SHA }}
+            TARGETPLATFORM=linux/${{ matrix.platform }}
   get-timestamp:
     name: Get build timestamp
     runs-on: ubuntu-latest
@@ -238,4 +239,4 @@ jobs:
 #          context: ${{ matrix.build.context }}
 #          push: true
 #          tags: ${{ steps.get_push_tags.outputs.TAGS }}
-#          platforms: linux/amd64,linux/arm64
+#          platforms: linux/amd64,linux/arm64Build and cache devlake
