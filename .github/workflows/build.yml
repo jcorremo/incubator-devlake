@@ -171,11 +171,8 @@ jobs:
           cache-from: |
             ${{ secrets.DOCKERHUB_OWNER }}/devlake:amd64-builder
             ${{ secrets.DOCKERHUB_OWNER }}/devlake:base
-          #cache-from: |
-          #  ${{ secrets.DOCKERHUB_OWNER }}/devlake:amd64-builder
-          #  ${{ secrets.DOCKERHUB_OWNER }}/devlake:base
-          #  type=local,src=/tmp/devlake-build-cache-amd64
-          #  type=local,src=/tmp/devlake-build-cache-arm64
+            type=local,src=/tmp/devlake-build-cache-amd64
+            type=local,src=/tmp/devlake-build-cache-arm64
           build-args: |
             TAG=${{ github.ref_name }}
             SHA=${{ steps.get_short_sha.outputs.SHORT_SHA }}
