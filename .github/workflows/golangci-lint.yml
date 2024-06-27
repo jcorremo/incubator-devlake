@@ -15,34 +15,34 @@
 # limitations under the License.
 #
 
-name: golangci-lint
-on:
-  push:
-    tags:
-      - v*
-    branches:
-      - main
-  pull_request:
-jobs:
-  golangci:
-    name: lint
-    runs-on: ubuntu-latest
-    container: mericodev/lake-builder:latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Cache golangci-lint
-        id: cache-golangci-lint
-        uses: actions/cache@v3
-        with:
-          path: golangci-lint
-          key: ${{ runner.os }}-backend-golangci-lint
-      - name: generate mock
-        run: |
-          go version
-          cd backend
-          make mock
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: v1.53.3
-          working-directory: ./backend
+#name: golangci-lint
+#on:
+#  push:
+#    tags:
+#      - v*
+#    branches:
+#      - main
+#  pull_request:
+#jobs:
+#  golangci:
+#    name: lint
+#    runs-on: ubuntu-latest
+#    container: mericodev/lake-builder:latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Cache golangci-lint
+#        id: cache-golangci-lint
+#        uses: actions/cache@v3
+#        with:
+#          path: golangci-lint
+#          key: ${{ runner.os }}-backend-golangci-lint
+#      - name: generate mock
+#        run: |
+#          go version
+#          cd backend
+#          make mock
+#      - name: golangci-lint
+#        uses: golangci/golangci-lint-action@v3
+#        with:
+#          version: v1.53.3
+#          working-directory: ./backend

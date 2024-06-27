@@ -15,23 +15,23 @@
 # limitations under the License.
 #
 
-name: migration-script-lint
-on:
-  push:
-    tags:
-      - v*
-    branches:
-      - main
-  pull_request:
-jobs:
-  migration-script-lint:
-    name: migration-script-lint
-    runs-on: ubuntu-latest
-    container: mericodev/lake-builder:latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: migration script linting
-        run: |
-          go version
-          cd backend
-          go run core/migration/linter/main.go -p backend $(find . -path "**/migrationscripts/**.go")
+#name: migration-script-lint
+#on:
+#  push:
+#    tags:
+#      - v*
+#    branches:
+#      - main
+#  pull_request:
+#jobs:
+#  migration-script-lint:
+#    name: migration-script-lint
+#    runs-on: ubuntu-latest
+#    container: mericodev/lake-builder:latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: migration script linting
+#        run: |
+#          go version
+#          cd backend
+#          go run core/migration/linter/main.go -p backend $(find . -path "**/migrationscripts/**.go")

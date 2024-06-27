@@ -131,6 +131,7 @@ func GetApiProject(
 	}
 	query := url.Values{}
 	query.Set("q", projectKey)
+	query.Set("organization", "jcorremo")
 	res, err := apiClient.Get("projects/search", query, nil)
 	if err != nil {
 		return nil, err

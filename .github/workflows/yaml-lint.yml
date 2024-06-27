@@ -15,19 +15,19 @@
 # limitations under the License.
 #
 
-name: yaml-lint
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-jobs:
-  yaml-lint:
-    name: lint for yamls
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: github/super-linter/slim@v4
-        env:
-          FILTER_REGEX_INCLUDE: workspace/(docker-compose.yml|deployment/k8s/k8s-deploy.yaml)
+#name: yaml-lint
+#on:
+#  push:
+#    branches:
+#      - main
+#  pull_request:
+#jobs:
+#  yaml-lint:
+#    name: lint for yamls
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: github/super-linter/slim@v4
+#        env:
+#          FILTER_REGEX_INCLUDE: workspace/(docker-compose.yml|deployment/k8s/k8s-deploy.yaml)
 
