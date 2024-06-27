@@ -102,20 +102,19 @@ jobs:
 #        with:
 #          path: /tmp/devlake-build-cache-${{ matrix.platform }}
 #          key: buildx-devlake-build-cache-${{ github.run_id }}-${{ matrix.platform }}
-#      - name: Build and cache lake build
-#        uses: docker/build-push-action@v3
-#        with:
-#          context: ./backend
-#          push: false
-#          target: build
-#          tags: ${{ secrets.DOCKERHUB_OWNER }}/devlake:build-cache-${{ matrix.platform }}
-#          platforms: linux/${{ matrix.platform }}
-#          cache-from: ${{ secrets.DOCKERHUB_OWNER }}/devlake:amd64-builder
-#          cache-to: type=local,mode=min,dest=/tmp/devlake-build-cache-${{ matrix.platform }}
-#          build-args: |
-#            TAG=${{ github.ref_name }}
-#            SHA=${{ steps.get_short_sha.outputs.SHORT_SHA }}
-#            TARGETPLATFORM=linux/${{ matrix.platform }}
+      - name: Build and cache lake build
+        uses: docker/build-push-action@v3
+        with:
+          context: ./backend
+          push: false
+          target: build
+          tags: ${{ secrets.DOCKERHUB_OWNER }}/devlake:build-cache-${{ matrix.platform }}
+          platforms: linux/${{ matrix.platform }}
+          cache-from: ${{ secrets.DOCKERHUB_OWNER }}/devlake:amd64-builder
+          cache-to: type=local,mode=min,dest=/tmp/devlake-build-cache-${{ matrix.platform }}
+          build-args: |
+            TAG=${{ github.ref_name }}
+            SHA=${{ steps.get_short_sha.outputs.SHORT_SHA }}
   get-timestamp:
     name: Get build timestamp
     runs-on: ubuntu-latest
@@ -174,7 +173,6 @@ jobs:
             ${{ secrets.DOCKERHUB_OWNER }}/devlake:amd64-builder
             ${{ secrets.DOCKERHUB_OWNER }}/devlake:base
             type=local,src=/tmp/devlake-build-cache-amd64
-            type=local,src=/tmp/devlake-build-cache-arm64
           build-args: |
             TAG=${{ github.ref_name }}
             SHA=${{ steps.get_short_sha.outputs.SHORT_SHA }}
@@ -240,4 +238,4 @@ jobs:
 #          context: ${{ matrix.build.context }}
 #          push: true
 #          tags: ${{ steps.get_push_tags.outputs.TAGS }}
-#          platforms: linux/amd64,linux/arm64Build and cache devlake
+#          platforms: linux/amd64,linux/arm64
