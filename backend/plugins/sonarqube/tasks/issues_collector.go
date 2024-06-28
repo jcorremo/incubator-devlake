@@ -18,6 +18,7 @@ limitations under the License.
 package tasks
 
 import (
+	"os"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -71,6 +72,12 @@ func CollectIssues(taskCtx plugin.SubTaskContext) (err errors.Error) {
 			}
 		}
 	}
+
+	sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
+	if sonarCloudOrganization == "" {
+		sonarCloudOrganization = "default_organization"
+	}
+
 	rawDataSubTaskArgs, data := CreateRawDataSubTaskArgs(taskCtx, RAW_ISSUES_TABLE)
 	collector, err := helper.NewApiCollector(helper.ApiCollectorArgs{
 		RawDataSubTaskArgs: *rawDataSubTaskArgs,
@@ -102,7 +109,7 @@ func CollectIssues(taskCtx plugin.SubTaskContext) (err errors.Error) {
 			}
 			query.Set("p", fmt.Sprintf("%v", reqData.Pager.Page))
 			query.Set("ps", fmt.Sprintf("%v", reqData.Pager.Size))
-			query.Set("organization", "jcorremo")
+			query.Set("organization", sonarCloudOrganization)
 
 			query.Encode()
 			return query, nil

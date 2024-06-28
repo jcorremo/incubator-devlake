@@ -18,6 +18,7 @@ limitations under the License.
 package tasks
 
 import (
+	"os"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -36,6 +37,11 @@ func CollectFilemetrics(taskCtx plugin.SubTaskContext) errors.Error {
 	logger := taskCtx.GetLogger()
 	logger.Info("collect filemetrics")
 
+	sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
+	if sonarCloudOrganization == "" {
+		sonarCloudOrganization = "default_organization"
+	}
+
 	rawDataSubTaskArgs, data := CreateRawDataSubTaskArgs(taskCtx, RAW_FILEMETRICS_TABLE)
 	collector, err := helper.NewApiCollector(helper.ApiCollectorArgs{
 		RawDataSubTaskArgs: *rawDataSubTaskArgs,
@@ -50,7 +56,7 @@ func CollectFilemetrics(taskCtx plugin.SubTaskContext) errors.Error {
 			query.Set("metricKeys", "code_smells,sqale_index,sqale_rating,bugs,reliability_rating,vulnerabilities,security_rating,security_hotspots,security_hotspots_reviewed,security_review_rating,ncloc,coverage,uncovered_lines,lines_to_cover")
 			query.Set("p", fmt.Sprintf("%v", reqData.Pager.Page))
 			query.Set("ps", fmt.Sprintf("%v", reqData.Pager.Size))
-			query.Set("organization", "jcorremo")
+			query.Set("organization", sonarCloudOrganization)
 			return query, nil
 		},
 		ResponseParser: func(res *http.Response) ([]json.RawMessage, errors.Error) {

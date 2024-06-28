@@ -18,6 +18,7 @@ limitations under the License.
 package api
 
 import (
+	"os"
 	"context"
 	"fmt"
 	"net/http"
@@ -129,9 +130,15 @@ func GetApiProject(
 	var resData struct {
 		Data []models.SonarqubeApiProject `json:"components"`
 	}
+
 	query := url.Values{}
 	query.Set("q", projectKey)
-	query.Set("organization", "jcorremo")
+
+	sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
+	if sonarCloudOrganization != "" {
+		query.Set("organization", sonarCloudOrganization )
+	}
+
 	res, err := apiClient.Get("projects/search", query, nil)
 	if err != nil {
 		return nil, err
