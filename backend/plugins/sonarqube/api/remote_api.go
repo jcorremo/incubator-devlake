@@ -49,22 +49,20 @@ func querySonarqubeProjects(
 	if page.Page == 0 {
 		page.Page = 1
 	}
-
-	sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
-	if sonarCloudOrganization != "" {
-		res, err := apiClient.Get("projects/search", url.Values{
-			"p":  {fmt.Sprintf("%v", page.Page)},
-			"ps": {fmt.Sprintf("%v", page.PageSize)},
-			"q":  {keyword},
-			"organization": {sonarCloudOrganization},
-		}, nil)
-	} else {
-		res, err := apiClient.Get("projects/search", url.Values{
-			"p":  {fmt.Sprintf("%v", page.Page)},
-			"ps": {fmt.Sprintf("%v", page.PageSize)},
-			"q":  {keyword},
-		}, nil)
+	
+	urlValues := url.Values{
+		"p":  {fmt.Sprintf("%v", page.Page)},
+		"ps": {fmt.Sprintf("%v", page.PageSize)},
+		"q":  {keyword},
 	}
+	
+	sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
+
+	if sonarCloudOrganization != "" {
+		urlValues.Add("organization", sonarCloudOrganization)	
+	}
+
+	res, err := apiClient.Get("projects/search", urlValues, nil)
 
 	if err != nil {
 		return
