@@ -68,7 +68,6 @@ func Init() {
 func CreateAndRunApiServer() {
 	// Setup and run the server
 	Init()
-	services.InitExecuteMigration()
 	router := CreateApiServer()
 	SetupApiServer(router)
 	RunApiServer(router)

@@ -25,7 +25,7 @@ type GitExtractorTaskData struct {
 	Options         *GitExtractorOptions
 	ParsedURL       *url.URL
 	GitRepo         RepoCollector
-	SkipAllSubtasks bool // silently skip all tasks without raising errors
+	SkipAllSubtasks bool // siliently skip all tasks without raising error
 }
 
 type GitExtractorApiParams struct {

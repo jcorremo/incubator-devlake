@@ -18,12 +18,12 @@ limitations under the License.
 package tasks
 
 import (
-	"os"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 	"time"
+	"os"
 
 	"github.com/apache/incubator-devlake/core/errors"
 	"github.com/apache/incubator-devlake/core/models/common"
@@ -72,12 +72,6 @@ func CollectIssues(taskCtx plugin.SubTaskContext) (err errors.Error) {
 			}
 		}
 	}
-
-	sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
-	if sonarCloudOrganization == "" {
-		sonarCloudOrganization = "default_organization"
-	}
-
 	rawDataSubTaskArgs, data := CreateRawDataSubTaskArgs(taskCtx, RAW_ISSUES_TABLE)
 	collector, err := helper.NewApiCollector(helper.ApiCollectorArgs{
 		RawDataSubTaskArgs: *rawDataSubTaskArgs,
@@ -107,9 +101,13 @@ func CollectIssues(taskCtx plugin.SubTaskContext) (err errors.Error) {
 			if input.CreatedBefore != nil {
 				query.Set("createdBefore", GetFormatTime(input.CreatedBefore))
 			}
+			sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
+			if sonarCloudOrganization != "" {
+				query.Set("organization", sonarCloudOrganization)
+			}
+			
 			query.Set("p", fmt.Sprintf("%v", reqData.Pager.Page))
 			query.Set("ps", fmt.Sprintf("%v", reqData.Pager.Size))
-			query.Set("organization", sonarCloudOrganization)
 
 			query.Encode()
 			return query, nil

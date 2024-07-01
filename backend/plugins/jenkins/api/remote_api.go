@@ -19,7 +19,6 @@ package api
 
 import (
 	"fmt"
-	"golang.org/x/exp/slices"
 
 	"github.com/apache/incubator-devlake/core/errors"
 	"github.com/apache/incubator-devlake/core/plugin"
@@ -32,8 +31,6 @@ type JenkinsRemotePagination struct {
 	Page    int `json:"page"`
 	PerPage int `json:"per_page"`
 }
-
-var scopesWithJobs = []string{"org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject"}
 
 func listJenkinsRemoteScopes(
 	connection *models.JenkinsConnection,
@@ -56,17 +53,13 @@ func listJenkinsRemoteScopes(
 		parentId = &groupId
 	}
 	getJobsPageCallBack := func(job *models.Job) errors.Error {
-		if isGroup(job) {
-			// This is a group
-			job.Path = groupId
-			children = append(children, dsmodels.DsRemoteApiScopeListEntry[models.JenkinsJob]{
-				Type:     api.RAS_ENTRY_TYPE_GROUP,
-				Id:       fmt.Sprintf("%s/job/%s", job.Path, job.Name),
-				Name:     job.Name,
-				ParentId: parentId,
-			})
-		} else {
-			// This is a scope
+		switch job.Class {
+		case "org.jenkinsci.plugins.workflow.job.WorkflowJob":
+			fallthrough
+		case "org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject":
+			fallthrough
+		case "hudson.model.FreeStyleProject":
+			// this is a scope
 			jenkinsJob := job.ToJenkinsJob()
 			children = append(children, dsmodels.DsRemoteApiScopeListEntry[models.JenkinsJob]{
 				Type:     api.RAS_ENTRY_TYPE_SCOPE,
@@ -74,6 +67,15 @@ func listJenkinsRemoteScopes(
 				Name:     jenkinsJob.ScopeName(),
 				FullName: jenkinsJob.ScopeFullName(),
 				Data:     jenkinsJob,
+				ParentId: parentId,
+			})
+		default:
+			// this is a group
+			job.Path = groupId
+			children = append(children, dsmodels.DsRemoteApiScopeListEntry[models.JenkinsJob]{
+				Type:     api.RAS_ENTRY_TYPE_GROUP,
+				Id:       fmt.Sprintf("%s/job/%s", job.Path, job.Name),
+				Name:     job.Name,
 				ParentId: parentId,
 			})
 		}
@@ -91,10 +93,6 @@ func listJenkinsRemoteScopes(
 		}
 	}
 	return
-}
-
-func isGroup(job *models.Job) bool {
-	return job.Jobs != nil && !slices.Contains(scopesWithJobs, job.Class)
 }
 
 // RemoteScopes list all available scopes on the remote server

@@ -18,10 +18,10 @@ limitations under the License.
 package api
 
 import (
-	"os"
 	"fmt"
 	"net/url"
-
+	"os"
+	
 	"github.com/apache/incubator-devlake/core/errors"
 	"github.com/apache/incubator-devlake/core/plugin"
 	"github.com/apache/incubator-devlake/helpers/pluginhelper/api"
@@ -51,16 +51,21 @@ func querySonarqubeProjects(
 	}
 
 	sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
-	if sonarCloudOrganization == "" {
-		sonarCloudOrganization = "default_organization"
+	if sonarCloudOrganization != "" {
+		res, err := apiClient.Get("projects/search", url.Values{
+			"p":  {fmt.Sprintf("%v", page.Page)},
+			"ps": {fmt.Sprintf("%v", page.PageSize)},
+			"q":  {keyword},
+			"organization": {sonarCloudOrganization},
+		}, nil)
+	} else {
+		res, err := apiClient.Get("projects/search", url.Values{
+			"p":  {fmt.Sprintf("%v", page.Page)},
+			"ps": {fmt.Sprintf("%v", page.PageSize)},
+			"q":  {keyword},
+		}, nil)
 	}
 
-	res, err := apiClient.Get("projects/search", url.Values{
-		"p":  {fmt.Sprintf("%v", page.Page)},
-		"ps": {fmt.Sprintf("%v", page.PageSize)},
-		"q":  {keyword},
-		"organization": { sonarCloudOrganization },
-	}, nil)
 	if err != nil {
 		return
 	}

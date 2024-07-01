@@ -18,12 +18,11 @@ limitations under the License.
 package api
 
 import (
-	"os"
 	"context"
 	"fmt"
 	"net/http"
 	"net/url"
-
+	"os"
 	"github.com/apache/incubator-devlake/core/errors"
 	coreModels "github.com/apache/incubator-devlake/core/models"
 	"github.com/apache/incubator-devlake/core/models/domainlayer"
@@ -130,15 +129,12 @@ func GetApiProject(
 	var resData struct {
 		Data []models.SonarqubeApiProject `json:"components"`
 	}
-
 	query := url.Values{}
 	query.Set("q", projectKey)
-
 	sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
 	if sonarCloudOrganization != "" {
 		query.Set("organization", sonarCloudOrganization )
 	}
-
 	res, err := apiClient.Get("projects/search", query, nil)
 	if err != nil {
 		return nil, err

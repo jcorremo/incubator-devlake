@@ -18,15 +18,14 @@ limitations under the License.
 package tasks
 
 import (
-	"os"
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"net/url"
-
+	"os"
 	"github.com/apache/incubator-devlake/core/errors"
 	"github.com/apache/incubator-devlake/core/plugin"
 	helper "github.com/apache/incubator-devlake/helpers/pluginhelper/api"
+	"net/http"
+	"net/url"
 )
 
 var _ plugin.SubTaskEntryPoint = CollectAdditionalFilemetrics
@@ -36,11 +35,6 @@ const RAW_FILEMETRICS_ADDITIONAL_TABLE = "sonarqube_api_filemetrics_additional"
 func CollectAdditionalFilemetrics(taskCtx plugin.SubTaskContext) errors.Error {
 	rawDataSubTaskArgs, data := CreateRawDataSubTaskArgs(taskCtx, RAW_FILEMETRICS_ADDITIONAL_TABLE)
 
-	sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
-	if sonarCloudOrganization == "" {
-		sonarCloudOrganization = "default_organization"
-	}
-
 	collector, err := helper.NewApiCollector(helper.ApiCollectorArgs{
 		RawDataSubTaskArgs: *rawDataSubTaskArgs,
 		ApiClient:          data.ApiClient,
@@ -48,12 +42,15 @@ func CollectAdditionalFilemetrics(taskCtx plugin.SubTaskContext) errors.Error {
 		UrlTemplate:        "measures/component_tree",
 		Query: func(reqData *helper.RequestData) (url.Values, errors.Error) {
 			query := url.Values{}
+			sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
+			if sonarCloudOrganization != "" {
+				query.Set("organization", sonarCloudOrganization)
+			}
 			query.Set("component", data.Options.ProjectKey)
 			query.Set("qualifiers", "FIL")
 			query.Set("metricKeys", "duplicated_lines_density,duplicated_blocks,duplicated_lines, duplicated_files, complexity, cognitive_complexity, effort_to_reach_maintainability_rating_a, lines")
 			query.Set("p", fmt.Sprintf("%v", reqData.Pager.Page))
 			query.Set("ps", fmt.Sprintf("%v", reqData.Pager.Size))
-			query.Set("organization", sonarCloudOrganization)
 			return query, nil
 		},
 		ResponseParser: func(res *http.Response) ([]json.RawMessage, errors.Error) {

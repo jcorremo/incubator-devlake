@@ -18,8 +18,6 @@ limitations under the License.
 package store
 
 import (
-	"reflect"
-
 	"github.com/apache/incubator-devlake/core/context"
 	"github.com/apache/incubator-devlake/core/errors"
 	"github.com/apache/incubator-devlake/core/models/common"
@@ -27,6 +25,7 @@ import (
 	"github.com/apache/incubator-devlake/core/models/domainlayer/code"
 	"github.com/apache/incubator-devlake/core/models/domainlayer/crossdomain"
 	helper "github.com/apache/incubator-devlake/helpers/pluginhelper/api"
+	"reflect"
 )
 
 const BathSize = 100
@@ -38,7 +37,6 @@ type Database struct {
 }
 
 func NewDatabase(basicRes context.BasicRes, repoId string) *Database {
-
 	database := &Database{
 		table:  "gitextractor",
 		params: repoId,
@@ -55,10 +53,6 @@ func NewDatabase(basicRes context.BasicRes, repoId string) *Database {
 func (d *Database) updateRawDataFields(rawData *common.RawDataOrigin) {
 	rawData.RawDataTable = d.table
 	rawData.RawDataParams = d.params
-}
-
-func (d *Database) SetIncrementalMode(incrementalMode bool) {
-	d.driver.SetIncrementalMode(incrementalMode)
 }
 
 func (d *Database) RepoCommits(repoCommit *code.RepoCommit) errors.Error {
@@ -93,7 +87,7 @@ func (d *Database) Commits(commit *code.Commit) errors.Error {
 	if err != nil {
 		return err
 	}
-	d.updateRawDataFields(&commit.RawDataOrigin)
+	d.updateRawDataFields(&account.RawDataOrigin)
 	return commitBatch.Add(commit)
 }
 

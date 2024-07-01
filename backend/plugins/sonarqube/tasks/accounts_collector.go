@@ -18,11 +18,11 @@ limitations under the License.
 package tasks
 
 import (
-	"os"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 
 	"github.com/apache/incubator-devlake/core/errors"
 	"github.com/apache/incubator-devlake/core/plugin"
@@ -41,12 +41,6 @@ func CollectAccounts(taskCtx plugin.SubTaskContext) errors.Error {
 	if err != nil {
 		return err
 	}
-	
-	sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
-	if sonarCloudOrganization == "" {
-		sonarCloudOrganization = "default_organization"
-	}
-
 	if err := collectorWithState.InitCollector(helper.ApiCollectorArgs{
 		RawDataSubTaskArgs: *rawDataSubTaskArgs,
 		ApiClient:          data.ApiClient,
@@ -54,11 +48,15 @@ func CollectAccounts(taskCtx plugin.SubTaskContext) errors.Error {
 		UrlTemplate:        "users/search",
 		Query: func(reqData *helper.RequestData) (url.Values, errors.Error) {
 			query := url.Values{}
+			sonarCloudOrganization := os.Getenv("ENV_CUSTOM_SONAR_ORGANIZATION")
+			if sonarCloudOrganization != "" {
+				query.Set("organization", sonarCloudOrganization)
+			}
 			query.Set("p", fmt.Sprintf("%v", reqData.Pager.Page))
 			query.Set("ps", fmt.Sprintf("%v", reqData.Pager.Size))
-			query.Set("organization", sonarCloudOrganization)
 			return query, nil
 		},
+
 		GetTotalPages: GetTotalPagesFromResponse,
 		ResponseParser: func(res *http.Response) ([]json.RawMessage, errors.Error) {
 			var resData struct {
