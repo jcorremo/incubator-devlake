@@ -77,7 +77,7 @@ jobs:
   #        cache-from: ${{ secrets.DOCKERHUB_OWNER }}/devlake:base
   #        cache-to: ${{ secrets.DOCKERHUB_OWNER }}/devlake:base
   build-devlake:
-    needs: build-and-push-builder
+    #needs: build-and-push-builder
     name: Build and cache devlake
     runs-on: ubuntu-latest
     strategy:
@@ -124,7 +124,7 @@ jobs:
         id: ts
         run: echo "timestamp=$(date '+%y%m%d_%H%M')" >> $GITHUB_OUTPUT
   build-and-push-devlake:
-    needs: [build-devlake, build-and-push-base, get-timestamp]
+    needs: [build-devlake, get-timestamp]
     name: Build and Push devlake image
     runs-on: ubuntu-latest
     steps:
