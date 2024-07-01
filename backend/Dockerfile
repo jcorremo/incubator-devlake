@@ -79,47 +79,32 @@ RUN for arch in aarch64 x86_64 ; do \
     done
 
 
-#FROM builder as build
-#
-#WORKDIR /app
-#COPY . /app
-#ENV GOBIN=/app/bin
-#
-#ARG TARGETPLATFORM
-#ARG TAG=
-#ARG SHA=
-#ARG GO_PLUGINS=
+FROM builder as build
 
-#RUN --mount=type=cache,target=/root/.cache/go-build \
-#    if [ "$TARGETPLATFORM" = "linux/arm64" ] ; then \
-#        ln -s /usr/local/deps/aarch64 /usr/local/deps/target && \
-#        export CC=aarch64-linux-gnu-gcc && \
-#        export GOARCH=arm64 ; \
-#    else \
-#        ln -s /usr/local/deps/x86_64 /usr/local/deps/target && \
-#        export CC=x86_64-linux-gnu-gcc && \
-#        export GOARCH=amd64 ; \
-#    fi && \
-#    export PKG_CONFIG_PATH=/usr/local/deps/target/lib/pkgconfig && \
-#    export CGO_ENABLED=1 &&\
-#    DEVLAKE_PLUGINS="$GO_PLUGINS" make all
-#
-#RUN --mount=type=cache,target=/root/.cache/go-build \
-#    ln -s /usr/local/deps/x86_64 /usr/local/deps/target && \
-#    export CC=x86_64-linux-gnu-gcc && \
-#    export GOARCH=amd64 && \
-#    export PKG_CONFIG_PATH=/usr/local/deps/target/lib/pkgconfig && \
-#    export CGO_ENABLED=1 && \
-#    DEVLAKE_PLUGINS="$GO_PLUGINS" make all
+WORKDIR /app
+COPY . /app
+ENV GOBIN=/app/bin
+
+ARG TARGETPLATFORM
+ARG TAG=
+ARG SHA=
+ARG GO_PLUGINS=
+
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    ln -s /usr/local/deps/x86_64 /usr/local/deps/target && \
+    export CC=x86_64-linux-gnu-gcc && \
+    export GOARCH=amd64 && \
+    export PKG_CONFIG_PATH=/usr/local/deps/target/lib/pkgconfig && \
+    export CGO_ENABLED=1 && \
+    DEVLAKE_PLUGINS="$GO_PLUGINS" make all
 
 # remove symlink in lib, we will recreate in final image
-
-#RUN cd /usr/local/deps/target/lib && \
-#    for file in *.so* ; do \
-#        if [ -L $file ] ; then \
-#            unlink $file ; \
-#        fi \
-#    done
+RUN cd /usr/local/deps/target/lib && \
+    for file in *.so* ; do \
+        if [ -L $file ] ; then \
+            unlink $file ; \
+        fi \
+    done
 
 
 FROM python:3.9-slim-bullseye as base
