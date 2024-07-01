@@ -113,12 +113,13 @@ ARG GO_PLUGINS=
 #    DEVLAKE_PLUGINS="$GO_PLUGINS" make all
 
 # remove symlink in lib, we will recreate in final image
-RUN cd /usr/local/deps/target/lib && \
-    for file in *.so* ; do \
-        if [ -L $file ] ; then \
-            unlink $file ; \
-        fi \
-    done
+
+#RUN cd /usr/local/deps/target/lib && \
+#    for file in *.so* ; do \
+#        if [ -L $file ] ; then \
+#            unlink $file ; \
+#        fi \
+#    done
 
 
 FROM python:3.9-slim-bullseye as base
