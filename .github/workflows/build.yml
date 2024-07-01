@@ -124,7 +124,7 @@ jobs:
         id: ts
         run: echo "timestamp=$(date '+%y%m%d_%H%M')" >> $GITHUB_OUTPUT
   build-and-push-devlake:
-    needs: [build-devlake, get-timestamp]
+    needs: [build-devlake, build-and-push-builder, get-timestamp]
     name: Build and Push devlake image
     runs-on: ubuntu-latest
     steps:
