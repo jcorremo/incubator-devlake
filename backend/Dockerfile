@@ -79,16 +79,16 @@ RUN for arch in aarch64 x86_64 ; do \
     done
 
 
-FROM builder as build
-
-WORKDIR /app
-COPY . /app
-ENV GOBIN=/app/bin
-
-ARG TARGETPLATFORM
-ARG TAG=
-ARG SHA=
-ARG GO_PLUGINS=
+#FROM builder as build
+#
+#WORKDIR /app
+#COPY . /app
+#ENV GOBIN=/app/bin
+#
+#ARG TARGETPLATFORM
+#ARG TAG=
+#ARG SHA=
+#ARG GO_PLUGINS=
 
 #RUN --mount=type=cache,target=/root/.cache/go-build \
 #    if [ "$TARGETPLATFORM" = "linux/arm64" ] ; then \
