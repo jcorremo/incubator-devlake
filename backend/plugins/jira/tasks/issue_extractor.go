@@ -118,7 +118,6 @@ func extractIssues(data *JiraTaskData, mappings *typeMappings, row *api.RawData)
 		fmt.Println("story point field is not empty:: ISSUEID:: ", issue.IssueId )
 		fmt.Println("story point field is not empty:: DBFIELD:: " , data.Options.ScopeConfig.StoryPointField )
 		fmt.Println("story point field is not empty:: FILTEREDVALUE:: ", unknownStoryPoint ) 
-		fmt.Println("story point field is not empty:: VALUE_TYPE :: ", unknownStoryPoint.(type) )
 
 		switch sp := unknownStoryPoint.(type) {
 		case string:
