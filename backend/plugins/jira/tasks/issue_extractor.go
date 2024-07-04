@@ -23,6 +23,8 @@ import (
 	"strings"
 	"time"
 
+	"fmt"
+
 	"github.com/apache/incubator-devlake/core/dal"
 	"github.com/apache/incubator-devlake/core/errors"
 	"github.com/apache/incubator-devlake/core/plugin"
@@ -104,21 +106,32 @@ func extractIssues(data *JiraTaskData, mappings *typeMappings, row *api.RawData)
 		}
 		results = append(results, sprintIssue)
 	}
+
 	if issue.ResolutionDate != nil {
 		temp := uint(issue.ResolutionDate.Unix()-issue.Created.Unix()) / 60
 		issue.LeadTimeMinutes = &temp
 	}
+
 	if data.Options.ScopeConfig != nil && data.Options.ScopeConfig.StoryPointField != "" {
+
 		unknownStoryPoint := apiIssue.Fields.AllFields[data.Options.ScopeConfig.StoryPointField]
+		fmt.Println("story point field is not empty:: ISSUEID:: " + issue.IssueId )
+		fmt.Println("story point field is not empty:: DBFIELD:: " + data.Options.ScopeConfig.StoryPointField )
+		fmt.Println("story point field is not empty:: FILTEREDVALUE:: " + unknownStoryPoint ) 
+		fmt.Println("story point field is not empty:: VALUE_TYPE :: " + unknownStoryPoint.(type) )
+
 		switch sp := unknownStoryPoint.(type) {
 		case string:
 			// string, try to parse
 			temp, _ := strconv.ParseFloat(sp, 32)
+			fmt.Println("story point field is not empty:: STRING PARSED " + temp)
 			issue.StoryPoint = &temp
 		case nil:
+			fmt.Println("story point field is not empty:: NIL PARSED ")
 		default:
 			// not string, convert to float64, ignore it if failed
 			temp, _ := unknownStoryPoint.(float64)
+			fmt.Println("story point field is not empty:: NON STRING PARSED " + temp)
 			issue.StoryPoint = &temp
 		}
 
